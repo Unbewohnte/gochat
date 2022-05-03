@@ -1,0 +1,57 @@
+@viewport {
+    width: device-width;
+    zoom: 1.0;
+} 
+
+body {
+    margin: auto;
+    margin-top: 5ch;
+    margin-bottom: 10ch;
+    background-color: #232729;
+    max-width: 120ch;
+    padding-left: 2ch;
+    padding-right: 2ch;
+
+
+    font-size: 1.1em;
+
+    word-wrap: break-word;
+    color: #bbbbbb;
+}
+
+a {
+    text-decoration: none;
+    color: #bbbbbb;
+}
+
+a:hover {
+    color: azure;
+}
+
+nav {
+    white-space: nowrap;
+    display: inline-block;
+}
+
+#wrapper {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    row-gap: 3ch;
+}
+
+#chatbox {
+    flex: 1 0 90%;
+    width: auto;
+    height: 60ch;
+
+    max-width: 80ch;
+    max-height: 150ch;
+
+    overflow-y: scroll;
+    border: 1px solid #bbbbbb;
+}
+
+#error_output {
+    color: firebrick;
+}

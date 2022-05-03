@@ -1,0 +1,26 @@
+{{ template "base" . }}
+
+{{ define "content" }}
+
+<h3>Register</h3>
+
+<form name="auth_form" onsubmit="return false;">
+    <p>
+        <label for="username">Username</label> <br>
+        <input type="text" name="username" required minlength="3">
+    </p>
+
+    <p>
+        <label for="password">Password</label> <br>
+        <input type="password" name="password" required minlength="3">
+    </p>
+
+    <p>
+        <input type="submit" value="Register" onmouseup="register()">
+    </p>
+</form>
+
+<script src="/scripts/sha256.js"></script>
+<script src="/scripts/user.js"></script>
+
+{{ end }}
