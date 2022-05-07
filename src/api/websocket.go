@@ -22,7 +22,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"unbewohnte.xyz/gochat/log"
+	"unbewohnte.xyz/Unbewohnte/gochat/log"
 )
 
 // Websocket connection paired with the owner

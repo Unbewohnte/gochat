@@ -22,8 +22,8 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"unbewohnte.xyz/gochat/api"
-	"unbewohnte.xyz/gochat/log"
+	"unbewohnte.xyz/Unbewohnte/gochat/api"
+	"unbewohnte.xyz/Unbewohnte/gochat/log"
 )
 
 // Websocket creation handler
