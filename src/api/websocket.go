@@ -95,11 +95,12 @@ func (holder *WSHolder) HandleNewWebSocketMessages(ws *WS, output chan Message) 
 				break
 			}
 
-			if len(newMessage.Contents) < 1 {
+			if len(newMessage.Contents) < 1 || uint(len(newMessage.Contents)) > MaxMessageContentLen {
 				break
 			}
 
 			newMessage.From = ws.User
+			newMessage.TimeStamp = uint64(time.Now().UnixMilli())
 			output <- newMessage
 		}
 

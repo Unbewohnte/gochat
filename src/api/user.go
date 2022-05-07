@@ -18,8 +18,6 @@ package api
 
 import (
 	"fmt"
-
-	"unbewohnte.xyz/gochat/log"
 )
 
 const HashLength uint = 64
@@ -62,8 +60,6 @@ func (db *DB) CreateUser(user *User) error {
 	if err != nil {
 		return err
 	}
-
-	log.Info("created user \"%s\"", user.Name)
 
 	return nil
 }

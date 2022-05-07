@@ -25,8 +25,8 @@ import (
 )
 
 const (
-	UsersTablename string = "users"
-	// MessagesTablename string = "messages"
+	UsersTablename    string = "users"
+	MessagesTablename string = "messages"
 )
 
 // SQL database wrapper
@@ -51,26 +51,31 @@ func (db *DB) createUsersTable() error {
 	return nil
 }
 
-// func (db *DB) createMessagesTable() error {
-// 	command := fmt.Sprintf(
-// 		`CREATE TABLE IF NOT EXISTS %s
-// 		(id INTEGER NOT NULL PRIMARY KEY, content TEXT NOT NULL,
-// 		from_name TEXT NOT NULL, FOREIGN KEY(from_name) REFERENCES %s(username))`,
-// 		MessagesTablename, UsersTablename,
-// 	)
+func (db *DB) createMessagesTable() error {
+	command := fmt.Sprintf(
+		`CREATE TABLE IF NOT EXISTS %s
+		(id INTEGER NOT NULL PRIMARY KEY, content TEXT NOT NULL,
+		sender TEXT NOT NULL, timestamp INTEGER, FOREIGN KEY(sender) REFERENCES %s(username))`,
+		MessagesTablename, UsersTablename,
+	)
 
-// 	_, err := db.Exec(command)
-// 	if err != nil {
-// 		return err
-// 	}
+	_, err := db.Exec(command)
+	if err != nil {
+		return err
+	}
 
-// 	return nil
-// }
+	return nil
+}
 
 func (db *DB) setUpTables() error {
 	err := db.createUsersTable()
 	if err != nil {
 		return fmt.Errorf("error creating users table: %s", err)
+	}
+
+	err = db.createMessagesTable()
+	if err != nil {
+		return fmt.Errorf("error creating messages table: %s", err)
 	}
 
 	return nil

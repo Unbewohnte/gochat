@@ -32,7 +32,7 @@ var (
 func init() {
 	infoLog = log.New(os.Stdout, "[INFO] ", log.Ldate|log.Ltime)
 	warningLog = log.New(os.Stdout, "[WARNING] ", log.Ldate|log.Ltime)
-	errorLog = log.New(os.Stdout, "[ERROR] ", log.Ldate|log.Ltime|log.Lshortfile)
+	errorLog = log.New(os.Stdout, "[ERROR] ", log.Ldate|log.Ltime)
 }
 
 // Set up loggers to write to the given writer

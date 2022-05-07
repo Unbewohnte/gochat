@@ -19,6 +19,7 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"unbewohnte.xyz/gochat/api"
@@ -64,9 +65,21 @@ func (s *Server) HandlerWebsockets(w http.ResponseWriter, req *http.Request) {
 	// add this new authorized socket to the broadcast
 	s.websockets.Sockets = append(s.websockets.Sockets, &newWS)
 
-	log.Info("A new websocket connection has been established with %s as \"%s\"", newWS.Socket.RemoteAddr(), newWS.User.Name)
+	log.Info("a new websocket connection has been established with %s as \"%s\"", newWS.Socket.RemoteAddr(), newWS.User.Name)
 	go s.websockets.HandleNewWebSocketMessages(&newWS, s.incomingMessages)
 
+	// send this new socket all previous messages to display
+	allMessages, err := s.db.GetAllMessages()
+	if err != nil {
+		// well, or not
+		log.Error("could not get all previous messages to display for %s: %s", newWS.User.Name, err)
+	} else {
+		for _, message := range *allMessages {
+			newWS.Socket.WriteJSON(&message)
+		}
+	}
+
+	// notify chat that a new user has connected
 	newConnectionMessage := api.Message{
 		From:     api.UserSystem,
 		Contents: fmt.Sprintf("%s has connected", newWS.User.Name),
@@ -80,6 +93,17 @@ func (s *Server) BroadcastMessages() {
 		message, ok := <-s.incomingMessages
 		if !ok {
 			break
+		}
+
+		if message.From.Name == api.UserSystem.Name {
+			// add timestapm manually for the system user
+			message.TimeStamp = uint64(time.Now().Unix())
+		}
+
+		// add incoming message to the db
+		err := s.db.AddMessage(message)
+		if err != nil {
+			log.Error("could not add a new message from %s to the db: %s", message.From.Name, err)
 		}
 
 		for _, ws := range s.websockets.Sockets {

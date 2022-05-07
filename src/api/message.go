@@ -16,43 +16,69 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package api
 
+import (
+	"fmt"
+	"strconv"
+)
+
 // A message struct that is converted back and forth to JSON in order to communicate with frontend
 type Message struct {
+	ID        uint64
 	TimeStamp uint64 `json:"timestamp"`
 	From      User   `json:"from"`
 	Contents  string `json:"contents"`
 }
 
-/* PROBABLY come back later and implement a message-remembering feature */
+// Add a new message to the database, following the limitations and removing the
+// oldest one as well if the capacity has been exceeded
+func (db *DB) AddMessage(message Message) error {
+	// check how many messages are already stored
+	command := fmt.Sprintf("SELECT COUNT(*) FROM %s", MessagesTablename)
+	result := db.QueryRow(command)
+	err := result.Err()
+	if err != nil {
+		return err
+	}
 
-// func (db *DB) AddMessage(message Message) error {
-// 	command := fmt.Sprintf("INSERT INTO %s(from, contents) VALUES(%s, %s)", MessagesTablename, message.From.Name, message.Contents)
-// 	_, err := db.Exec(command)
-// 	if err != nil {
-// 		return err
-// 	}
+	var countStr string
+	result.Scan(&countStr)
+	count, err := strconv.ParseUint(countStr, 10, 64)
+	if err != nil {
+		return err
+	}
 
-// 	return nil
-// }
+	if count >= uint64(MaxMessagesRemembered) {
+		// remove the last one
+		command = fmt.Sprintf("DELETE FROM %s WHERE timestamp = (SELECT MIN(timestamp) FROM %s)", MessagesTablename, MessagesTablename)
+		_, err := db.Exec(command)
+		if err != nil {
+			return err
+		}
+	}
 
-// func (db *DB) GetAllMessages() (*[]Message, error) {
-// 	command := fmt.Sprintf("SELECT * FROM %s", MessagesTablename)
-// 	rows, err := db.Query(command)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	command = fmt.Sprintf("INSERT INTO %s(sender, content, timestamp) VALUES(\"%s\", \"%s\", %d)", MessagesTablename, message.From.Name, message.Contents, message.TimeStamp)
+	_, err = db.Exec(command)
+	if err != nil {
+		return err
+	}
 
-// 	var messages []Message
+	return nil
+}
 
-// 	/*
-// 		(id INTEGER NOT NULL PRIMARY KEY, content TEXT NOT NULL,
-// 		 to_name TEXT NOT NULL, from_name TEXT NOT NULL, FOREIGN KEY(from_name, to_name) REFERENCES %s(username, username))`,
-// 	*/
-// 	for rows.Next() {
-// 		var message Message
-// 		rows.Scan(&message.ID, &message.Contents, message.From.Name)
-// 		messages = append(messages, message)
-// 	}
+func (db *DB) GetAllMessages() (*[]Message, error) {
+	command := fmt.Sprintf("SELECT * FROM %s", MessagesTablename)
+	rows, err := db.Query(command)
+	if err != nil {
+		return nil, err
+	}
 
-// 	return &messages, nil
-// }
+	var messages []Message
+
+	for rows.Next() {
+		var message Message
+		rows.Scan(&message.ID, &message.Contents, &message.From.Name, &message.TimeStamp)
+		messages = append(messages, message)
+	}
+
+	return &messages, nil
+}

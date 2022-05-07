@@ -48,8 +48,8 @@ areCredentialsValid({username:username, secret_hash:secret_hash})
         socket.onmessage = event => {
             let message = JSON.parse(event.data); 
             let from_user = message.from.username;
-
-            let constructed_message_to_display = `${from_user}: ${message.contents}` + "\n";
+            let date = new Date(message.timestamp).toLocaleString();
+            let constructed_message_to_display = `[${date}] ${from_user}: ${message.contents}` + "\n";
 
             let chatbox = document.getElementById("chatbox");
             chatbox.innerHTML += constructed_message_to_display;
