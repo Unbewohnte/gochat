@@ -56,7 +56,8 @@ func (db *DB) AddMessage(message Message) error {
 		}
 	}
 
-	command = fmt.Sprintf("INSERT INTO %s(sender, content, timestamp) VALUES(\"%s\", \"%s\", %d)", MessagesTablename, message.From.Name, message.Contents, message.TimeStamp)
+	command = fmt.Sprintf("INSERT INTO %s(sender, content, timestamp) VALUES('%s', '%s', %d)",
+		MessagesTablename, message.From.Name, message.Contents, message.TimeStamp)
 	_, err = db.Exec(command)
 	if err != nil {
 		return err

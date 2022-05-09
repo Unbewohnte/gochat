@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. -->
     <link rel="stylesheet" href="/static/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/scripts/constants.js"></script>
+    <script src="/scripts/util.js"></script>
 </head>
 
 <body>
@@ -36,11 +37,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. -->
         <a href="/login">log in</a>
     </nav>
     
+    <div id="error_output"></div>
+
     <div id="content">
         {{ template "content" .}}
-    </div>
-    
-    <footer id="error_output"></footer>
+    </div>    
 </div>
 
 </body>

@@ -33,6 +33,18 @@ nav {
     display: inline-block;
 }
 
+.chat-image {
+    max-width: 40%;
+    max-height: 80%;
+
+    min-width: 12ch;
+    min-height: 16ch;
+}
+
+.greentext {
+    color: green;
+}
+
 #wrapper {
     display: flex;
     flex-flow: column wrap;

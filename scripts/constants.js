@@ -14,9 +14,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const API_BASE_ENDPOINT = "api";
 const API_USER_ENDPOINT = "api/user"
 const API_WEBSOCKET_ENDPOINT = "api/ws";
+const API_ATTACHMENT_ENDPOINT = "api/attachment"
 
 const AUTH_HEADER_KEY = "AUTH_INFO";
 const AUTH_SEPARATOR = ":"
@@ -24,4 +24,6 @@ const AUTH_SEPARATOR = ":"
 const LOCALSTORAGE_NAME_KEY = "username";
 const LOCALSTORAGE_PASSWORD_HASH_KEY = "secret_hash";
 
-const BACKEND_URL = window.location.host;
+const ATTACHMENT_FORM_KEY = "attachment";
+
+const HOST = window.location.host;

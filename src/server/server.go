@@ -38,6 +38,13 @@ type Server struct {
 	incomingMessages chan api.Message
 }
 
+const (
+	pagesDirName       string = "pages"
+	staticDirName      string = "static"
+	scriptsDirName     string = "scripts"
+	attachmentsDirName string = "attachments"
+)
+
 // Create a new configured and ready-to-launch server
 func New(workingDir string, dbPath string, port uint) (*Server, error) {
 	var server = Server{
@@ -60,11 +67,12 @@ func New(workingDir string, dbPath string, port uint) (*Server, error) {
 	server.db = db
 
 	// set up routes and handlers
-	const (
-		pagesDirName   string = "pages"
-		staticDirName  string = "static"
-		scriptsDirName string = "scripts"
-	)
+	attachmentsDirPath := filepath.Join(workingDir, attachmentsDirName)
+	err = os.MkdirAll(attachmentsDirPath, os.ModePerm)
+	if err != nil {
+		log.Error("could not create attachments directory: %s", err)
+		os.Exit(1)
+	}
 
 	pagesDirPath := filepath.Join(workingDir, pagesDirName)
 
@@ -72,6 +80,7 @@ func New(workingDir string, dbPath string, port uint) (*Server, error) {
 
 	serveMux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(workingDir, staticDirName)))))
 	serveMux.Handle("/scripts/", http.StripPrefix("/scripts/", http.FileServer(http.Dir(filepath.Join(workingDir, scriptsDirName)))))
+	serveMux.Handle("/attachments/", http.StripPrefix("/attachments/", http.FileServer(http.Dir(attachmentsDirPath))))
 
 	serveMux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		switch req.URL.Path {
@@ -85,6 +94,9 @@ func New(workingDir string, dbPath string, port uint) (*Server, error) {
 
 		default:
 			if strings.HasPrefix(req.URL.Path, api.RouteBase) {
+				return
+			} else if strings.Contains(req.URL.Path, "favicon.ico") {
+				// remove that annoying favicon error by simply ingoring the thing
 				return
 			}
 
@@ -101,6 +113,8 @@ func New(workingDir string, dbPath string, port uint) (*Server, error) {
 	serveMux.HandleFunc(api.RouteUsers, server.HandlerUsers)
 	// ws api endpoint
 	serveMux.HandleFunc(api.RouteWebsockets, server.HandlerWebsockets)
+	// attachments handler
+	serveMux.HandleFunc(api.RoutePostAttachemnts, server.handleAttachments)
 
 	httpServer := http.Server{
 		Addr:         fmt.Sprintf(":%d", port),
@@ -116,8 +130,11 @@ func New(workingDir string, dbPath string, port uint) (*Server, error) {
 // Fire up the server
 func (s *Server) Start() {
 	defer s.db.ShutDown()
+	// broadcast messages
 	go s.BroadcastMessages()
-
+	// clean attachments storage from time to time
+	// max attachment filesize * 50 is the limit, check every 5 sec
+	go manageAttachmentsStorage(filepath.Join(s.workingDir, attachmentsDirName), api.MaxAttachmentSize*50, time.Second*5)
 	// fire up a server
 	err := s.http.ListenAndServe()
 	if err != nil {

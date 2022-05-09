@@ -5,3 +5,6 @@ const MaxMessageContentLen uint = 500
 
 // How many messages can be "remembered" until removal
 const MaxMessagesRemembered uint = 50
+
+// Max filesize to accept as attachment
+const MaxAttachmentSize uint64 = 31457280 // 30MB

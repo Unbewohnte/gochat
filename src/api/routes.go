@@ -17,8 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package api
 
 const (
-	RouteBase       string = "/api"
-	RouteUsers      string = RouteBase + "/user"
-	RouteWebsockets string = RouteBase + "/ws"
-	RouteRooms      string = RouteBase + "/room"
+	RouteBase            string = "/api"
+	RouteUsers           string = RouteBase + "/user"
+	RouteWebsockets      string = RouteBase + "/ws"
+	RoutePostAttachemnts string = RouteBase + "/attachment"
 )

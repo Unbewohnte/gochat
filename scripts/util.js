@@ -14,6 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+
 function sha256(string) {
     const encoded_string = new TextEncoder().encode(string);
     return crypto.subtle.digest('SHA-256', encoded_string).then((hash_sum) => {
@@ -23,4 +24,26 @@ function sha256(string) {
         .join('');
       return hashHex;
     });
-  }
+}
+
+
+function to_hex_string(byteArr) {
+    return Array.from(byteArr, function(byte) {
+        return ('0' + (byte & 0xFF).toString(16).slice(-2));
+    }).join('')
+}
+
+function is_image(filename) {
+    image_exts = ["jpe", "jpeg", "jpg", "png", "ppm", "gif"]
+    
+    let is_img = false;
+
+    image_exts.find(ext => {
+        if (filename.includes(ext)) {
+            is_img = true;
+            return true;
+        }
+    });
+
+    return is_img;
+}
