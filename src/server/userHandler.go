@@ -21,8 +21,8 @@ import (
 	"io"
 	"net/http"
 
-	"unbewohnte.xyz/Unbewohnte/gochat/api"
-	"unbewohnte.xyz/Unbewohnte/gochat/log"
+	"unbewohnte/gochat/api"
+	"unbewohnte/gochat/log"
 )
 
 // User creation/credentials validation http handler

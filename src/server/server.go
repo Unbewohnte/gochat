@@ -24,9 +24,9 @@ import (
 	"strings"
 	"time"
 
-	"unbewohnte.xyz/Unbewohnte/gochat/api"
-	"unbewohnte.xyz/Unbewohnte/gochat/log"
-	"unbewohnte.xyz/Unbewohnte/gochat/page"
+	"unbewohnte/gochat/api"
+	"unbewohnte/gochat/log"
+	"unbewohnte/gochat/page"
 )
 
 // Server structure that glues api logic and http/websocket server together

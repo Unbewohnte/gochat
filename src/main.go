@@ -23,8 +23,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"unbewohnte.xyz/Unbewohnte/gochat/log"
-	"unbewohnte.xyz/Unbewohnte/gochat/server"
+	"unbewohnte/gochat/log"
+	"unbewohnte/gochat/server"
 )
 
 const version string = "0.1.0"

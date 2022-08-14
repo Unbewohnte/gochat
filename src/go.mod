@@ -1,4 +1,4 @@
-module unbewohnte.xyz/Unbewohnte/gochat
+module unbewohnte/gochat
 
 go 1.17
 

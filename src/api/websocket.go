@@ -21,8 +21,9 @@ import (
 	"fmt"
 	"time"
 
+	"unbewohnte/gochat/log"
+
 	"github.com/gorilla/websocket"
-	"unbewohnte.xyz/Unbewohnte/gochat/log"
 )
 
 // Websocket connection paired with the owner

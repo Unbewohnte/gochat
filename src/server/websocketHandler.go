@@ -21,9 +21,10 @@ import (
 	"net/http"
 	"time"
 
+	"unbewohnte/gochat/api"
+	"unbewohnte/gochat/log"
+
 	"github.com/gorilla/websocket"
-	"unbewohnte.xyz/Unbewohnte/gochat/api"
-	"unbewohnte.xyz/Unbewohnte/gochat/log"
 )
 
 // Websocket creation handler

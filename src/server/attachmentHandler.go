@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"unbewohnte.xyz/Unbewohnte/gochat/api"
-	"unbewohnte.xyz/Unbewohnte/gochat/log"
+	"unbewohnte/gochat/api"
+	"unbewohnte/gochat/log"
 )
 
 // Handle incoming attachments
