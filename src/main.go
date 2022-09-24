@@ -18,6 +18,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -26,12 +27,13 @@ import (
 	"unbewohnte/gochat/server"
 )
 
-const version string = "0.1.2"
+const versionNumber string = "0.1.2"
 
 var (
 	port        *uint   = flag.Uint("port", 8080, "Set working port")
 	tlsKeyFile  *string = flag.String("tlsKeyFile", "", "Specify tls key file")
 	tlsCertFile *string = flag.String("tlsCertFile", "", "Specify tls cert file")
+	version     *bool   = flag.Bool("version", false, "Print version information")
 )
 
 func main() {
@@ -62,6 +64,11 @@ func main() {
 
 	// parse flags
 	flag.Parse()
+
+	if *version {
+		fmt.Printf("gochat v%s\n\n(C) 2022 Unbewohnte (Kasyanov Nikolay Alexeyevich)\n", versionNumber)
+		return
+	}
 
 	const dbFilename string = "gochat.db"
 	dbPath := filepath.Join(exeDirPath, dbFilename)
