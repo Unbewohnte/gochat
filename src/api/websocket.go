@@ -70,8 +70,9 @@ func (holder *WSHolder) HandleNewWebSocketMessages(ws *WS, output chan Message) 
 			holder.Remove(ws.User.Name)
 
 			disconnectionMessage := Message{
-				From:     UserSystem,
-				Contents: fmt.Sprintf("%s has disconnected", ws.User.Name),
+				TimeStamp: uint64(time.Now().UnixMilli()),
+				From:      UserSystem,
+				Contents:  fmt.Sprintf("%s has disconnected", ws.User.Name),
 			}
 			output <- disconnectionMessage
 			break
@@ -83,8 +84,9 @@ func (holder *WSHolder) HandleNewWebSocketMessages(ws *WS, output chan Message) 
 			holder.Remove(ws.User.Name)
 
 			disconnectionMessage := Message{
-				From:     UserSystem,
-				Contents: fmt.Sprintf("%s has disconnected", ws.User.Name),
+				TimeStamp: uint64(time.Now().UnixMilli()),
+				From:      UserSystem,
+				Contents:  fmt.Sprintf("%s has disconnected", ws.User.Name),
 			}
 			output <- disconnectionMessage
 

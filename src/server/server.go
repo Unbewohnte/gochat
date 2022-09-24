@@ -139,7 +139,11 @@ func (s *Server) Start() {
 	go s.BroadcastMessages()
 	// clean attachments storage from time to time
 	// max attachment filesize * 50 is the limit, check every 5 sec
-	go manageAttachmentsStorage(filepath.Join(s.workingDir, attachmentsDirName), api.MaxAttachmentSize*50, time.Second*5)
+	go manageAttachmentsStorage(
+		filepath.Join(s.workingDir, attachmentsDirName),
+		api.MaxAttachmentSize,
+		time.Second*5,
+	)
 
 	// fire up either a TLS or non-TLS server
 	if s.keyFile != "" && s.certFile != "" {

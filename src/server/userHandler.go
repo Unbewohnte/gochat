@@ -108,20 +108,6 @@ func (s *Server) HandlerUsers(w http.ResponseWriter, req *http.Request) {
 			w.Write(responseBytes)
 		}
 
-		// users, err := db.getAllUsers()
-		// if err != nil {
-		// 	http.Error(w, "", http.StatusInternalServerError)
-		// 	return
-		// }
-
-		// w.Header().Add("Content-type", "application/json")
-		// userBytes, err := json.Marshal(*users)
-		// if err != nil {
-		// 	break
-		// }
-
-		// w.Write(userBytes)
-
 	default:
 		http.Error(w, "wrong method", http.StatusMethodNotAllowed)
 	}

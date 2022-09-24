@@ -82,8 +82,9 @@ func (s *Server) HandlerWebsockets(w http.ResponseWriter, req *http.Request) {
 
 	// notify chat that a new user has connected
 	newConnectionMessage := api.Message{
-		From:     api.UserSystem,
-		Contents: fmt.Sprintf("%s has connected", newWS.User.Name),
+		TimeStamp: uint64(time.Now().UnixMilli()),
+		From:      api.UserSystem,
+		Contents:  fmt.Sprintf("%s has connected", newWS.User.Name),
 	}
 	s.incomingMessages <- newConnectionMessage
 }
@@ -94,11 +95,6 @@ func (s *Server) BroadcastMessages() {
 		message, ok := <-s.incomingMessages
 		if !ok {
 			break
-		}
-
-		if message.From.Name == api.UserSystem.Name {
-			// add timestapm manually for the system user
-			message.TimeStamp = uint64(time.Now().Unix())
 		}
 
 		// add incoming message to the db

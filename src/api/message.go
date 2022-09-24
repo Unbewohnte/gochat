@@ -48,7 +48,7 @@ func (db *DB) AddMessage(message Message) error {
 	}
 
 	if count >= uint64(MaxMessagesRemembered) {
-		// remove the last one
+		// remove the last one if the max messages threshold has been exceeded
 		command = fmt.Sprintf("DELETE FROM %s WHERE timestamp = (SELECT MIN(timestamp) FROM %s)", MessagesTablename, MessagesTablename)
 		_, err := db.Exec(command)
 		if err != nil {

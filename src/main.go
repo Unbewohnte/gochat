@@ -26,7 +26,7 @@ import (
 	"unbewohnte/gochat/server"
 )
 
-const version string = "0.1.1"
+const version string = "0.1.2"
 
 var (
 	port        *uint   = flag.Uint("port", 8080, "Set working port")
