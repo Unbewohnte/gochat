@@ -14,7 +14,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package page
+package server
 
 import (
 	"html/template"
@@ -22,7 +22,7 @@ import (
 )
 
 // Parse files in pagesDir and return a ready-to-render template
-func Get(pagesDir string, base string, pagename string) (*template.Template, error) {
+func GetPage(pagesDir string, base string, pagename string) (*template.Template, error) {
 	page, err := template.ParseFiles(filepath.Join(pagesDir, base), filepath.Join(pagesDir, pagename))
 	if err != nil {
 		return nil, err

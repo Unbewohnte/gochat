@@ -26,12 +26,13 @@ import (
 
 	"unbewohnte/gochat/api"
 	"unbewohnte/gochat/log"
-	"unbewohnte/gochat/page"
 )
 
 // Server structure that glues api logic and http/websocket server together
 type Server struct {
 	workingDir       string
+	keyFile          string
+	certFile         string
 	http             *http.Server
 	db               *api.DB
 	websockets       *api.WSHolder
@@ -46,8 +47,10 @@ const (
 )
 
 // Create a new configured and ready-to-launch server
-func New(workingDir string, dbPath string, port uint) (*Server, error) {
+func New(workingDir string, dbPath string, port uint, keyFile string, certFile string) (*Server, error) {
 	var server = Server{
+		keyFile:          keyFile,
+		certFile:         certFile,
 		workingDir:       workingDir,
 		websockets:       &api.WSHolder{},
 		incomingMessages: make(chan api.Message),
@@ -85,7 +88,7 @@ func New(workingDir string, dbPath string, port uint) (*Server, error) {
 	serveMux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		switch req.URL.Path {
 		case "/":
-			requestedPage, err := page.Get(pagesDirPath, "base.html", "index.html")
+			requestedPage, err := GetPage(pagesDirPath, "base.html", "index.html")
 			if err != nil {
 				log.Error("error getting page on route %s: %s", req.URL.Path, err)
 				http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -100,7 +103,7 @@ func New(workingDir string, dbPath string, port uint) (*Server, error) {
 				return
 			}
 
-			requestedPage, err := page.Get(pagesDirPath, "base.html", req.URL.Path[1:]+".html")
+			requestedPage, err := GetPage(pagesDirPath, "base.html", req.URL.Path[1:]+".html")
 			if err != nil {
 				log.Error("error getting page on route %s: %s", req.URL.Path, err)
 				http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -124,6 +127,8 @@ func New(workingDir string, dbPath string, port uint) (*Server, error) {
 	}
 	server.http = &httpServer
 
+	log.Info("Created server instance")
+
 	return &server, nil
 }
 
@@ -135,9 +140,23 @@ func (s *Server) Start() {
 	// clean attachments storage from time to time
 	// max attachment filesize * 50 is the limit, check every 5 sec
 	go manageAttachmentsStorage(filepath.Join(s.workingDir, attachmentsDirName), api.MaxAttachmentSize*50, time.Second*5)
-	// fire up a server
-	err := s.http.ListenAndServe()
-	if err != nil {
-		log.Error("FATAL server error: %s", err)
+
+	// fire up either a TLS or non-TLS server
+	if s.keyFile != "" && s.certFile != "" {
+		log.Info("Using TLS")
+		log.Info("Working on %s", s.http.Addr)
+
+		err := s.http.ListenAndServeTLS(s.certFile, s.keyFile)
+		if err != nil {
+			log.Error("Fatal server error: %s", err)
+		}
+	} else {
+		log.Info("Not using TLS")
+		log.Info("Working on %s", s.http.Addr)
+
+		err := s.http.ListenAndServe()
+		if err != nil {
+			log.Error("Fatal server error: %s", err)
+		}
 	}
 }

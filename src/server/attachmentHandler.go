@@ -102,7 +102,7 @@ func manageAttachmentsStorage(attachmentsDirPath string, sizeLimit uint64, check
 			}
 
 			if dirSize > sizeLimit {
-				// A cleanup !
+				// cleanup !
 				os.Remove(oldestAttachmentPath)
 				log.Info(
 					"removed %s during attachments storage management. Cleared %d bytes",

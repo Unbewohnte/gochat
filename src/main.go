@@ -18,7 +18,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -27,7 +26,13 @@ import (
 	"unbewohnte/gochat/server"
 )
 
-const version string = "0.1.0"
+const version string = "0.1.1"
+
+var (
+	port        *uint   = flag.Uint("port", 8080, "Set working port")
+	tlsKeyFile  *string = flag.String("tlsKeyFile", "", "Specify tls key file")
+	tlsCertFile *string = flag.String("tlsCertFile", "", "Specify tls cert file")
+)
 
 func main() {
 	// set up logging
@@ -55,18 +60,13 @@ func main() {
 		log.SetOutput(os.Stdout)
 	}
 
-	// work out launch flags
-	var port uint
-	flag.UintVar(&port, "port", 8080, "Set working port")
-	flag.Usage = func() {
-		fmt.Printf("gochat v%s\n\nFlags\nport [uint] -> specify a port number (default: 8080)\n\n(c) Unbewohnte (Kasyanov Nikolay Alexeyevich)\n", version)
-	}
+	// parse flags
 	flag.Parse()
 
 	const dbFilename string = "gochat.db"
 	dbPath := filepath.Join(exeDirPath, dbFilename)
 
-	server, err := server.New(exeDirPath, dbPath, port)
+	server, err := server.New(exeDirPath, dbPath, *port, *tlsKeyFile, *tlsCertFile)
 	if err != nil {
 		log.Error("could not create a new server instance: %s", err)
 	}
